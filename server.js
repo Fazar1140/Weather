@@ -5,6 +5,9 @@ const redis = require('redis');
 require('dotenv').config();
 
 let redisclient;
+const Port  = process.env.PORT;
+
+const app = express();
 
 (async ()=>{
     redisclient = redis.createClient();
@@ -13,9 +16,7 @@ let redisclient;
 
     await redisclient.connect()
 })()
-const Port  = process.env.PORT;
-
-const app = express();
+ 
 
 app.get('/weather/:city',async (req,res)=>{
     const city = req.params.city;
@@ -23,18 +24,21 @@ app.get('/weather/:city',async (req,res)=>{
     let results;
     try{
         const cacheWeather = await redisclient.get(city)
+         
         if(cacheWeather){
             isCached=true;
             results = JSON.parse(cacheWeather);
             
         }else{
-            results = await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=QCNKKF2FJLAF4BVEQAYZPPLV7&contentType=json`)
-            console.log(results.data)
+            
+            const weatherResult = await axios.get(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&key=QCNKKF2FJLAF4BVEQAYZPPLV7&contentType=json`)
+            results = weatherResult.data;
+
             if(results.length===0){
                 throw 'API empty array'
             }
-            await redisclient.set(city,JSON.stringify(results.data),{
-                EX:180,
+            await redisclient.set(city,JSON.stringify(results),{
+                EX:10,
                 NX:true,
             })
         }
