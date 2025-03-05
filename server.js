@@ -1,7 +1,6 @@
 const express = require('express');
 const axios = require('axios');
 const redis = require('redis');
-
 require('dotenv').config();
 
 let redisclient;
@@ -9,6 +8,7 @@ const Port  = process.env.PORT;
 
 const app = express();
 
+ 
 (async ()=>{
     redisclient = redis.createClient();
 
@@ -16,7 +16,9 @@ const app = express();
 
     await redisclient.connect()
 })()
- 
+
+app.set('view engine','ejs')
+app.use(express.urlencoded({extended:false}))
 
 app.get('/weather/:city',async (req,res)=>{
     const city = req.params.city;
@@ -42,16 +44,18 @@ app.get('/weather/:city',async (req,res)=>{
                 NX:true,
             })
         }
-    res.send({
-        isChace: isCached,
-        data: results
-    })
+    
+    res.render('index',{isCached,results})
   
     }catch(err){
         console.log(err);
         res.status(404).send('data unavailable')
     }
 
+})
+app.post('/weather/post',(req,res)=>{
+    const city = req.body.cities; 
+    res.redirect(`/weather/${city}`)
 })
 
 app.listen(Port,()=>{

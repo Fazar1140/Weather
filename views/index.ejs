@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather | <%=results.address%></title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+     
+  </head>
+  <style>
+    /*weather container body*/
+    *{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    body{
+        padding: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .weather-container{
+        background-color: rgb(105, 205, 172);
+        width: 50%;
+        height: 80%;
+        padding: 30px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+    }
+    .weather-icon{
+        font-size: 150px;
+    }
+    .clear-day{
+        color: gold;
+    }
+    .rain{
+        color: gray
+    }
+    .cloudy{
+        color: rgb(169, 169, 169);
+    }
+    .forecast-icon{
+        font-size: 3rem;
+    }
+    .weather-forecast-list{
+        display: flex;
+        flex-direction: column;
+      
+        margin-inline: 10px;
+        align-items: center;
+        justify-content:space-between;
+    }
+    .weather-forecast{
+        display: flex;
+        
+    }
+    .weather-logo{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #city{
+        width: 300px;
+        height: 2rem;
+        font-size: 1rem;
+     
+
+    }
+  
+  </style>
+<body>
+     
+    <div class="weather-container">
+        <form name="weather-input" method="POST" action="/weather/post" >
+            <input type="text" name="cities" id="city" value="<%= results.address%>">
+            
+        </form>
+         
+        <div class="weather-title">
+            <h1><%= results.address %></h1>
+        </div>
+        <div class="weather-logo">
+            <% if (results.currentConditions.icon == "clear-day") { %>
+                <span class="weather-icon clear-day">&#x263C</span>
+            <% } else if (results.currentConditions.icon == "partly-cloudy-day") { %>
+                <span class="weather-icon ">&#x26C5</span>
+            <% } else if (results.currentConditions.icon == "partly-cloudy-night") { %>
+                <span class="weather-icon ">&#x1F325</span>
+            <% } else if (results.currentConditions.icon == "clear-night") { %>
+                <span class="weather-icon ">&#127765</span>
+            <% } else if (results.currentConditions.icon == "cloudy") { %>
+                <span class="weather-icon cloudy ">&#x2601</span>
+            <% } else if (results.currentConditions.icon == "rain") { %>
+                <span class="weather-icon rain">&#127783</span>
+            <% } else if (results.currentConditions.icon == "fog") { %>
+                <span class="weather-icon ">&#127787</span>
+            <% } else if (results.currentConditions.icon == "snow") { %>
+                <span class="weather-icon ">&#10052</span>
+            <% } else if (results.currentConditions.icon == "wind") { %>
+                <span class="weather-icon ">&#127786</span>
+            <% } %>
+            <h3><%= results.currentConditions.temp %> &#8451;</h3>
+            <h2><%= results.currentConditions.conditions%></h2>
+        </div>
+        <h5>day forecast</h5>
+        <div class="weather-forecast">
+             
+            <% for(let j = 1 ; j <= 5;j++) { %>
+                <div class="weather-forecast-list"> 
+                <%= results.days[j].temp %>&#8451
+
+                <% if (results.days[j].icon == "clear-day") { %>
+                    <span class="forecast-icon clear-day">&#x263C</span>
+                <% } else if (results.days[j].icon  == "partly-cloudy-day") { %>
+                    <span class="forecast-icon ">&#x26C5</span>
+                <% } else if (results.days[j].icon  == "partly-cloudy-night") { %>
+                    <span class="forecast-icon ">&#x1F325</span>
+                <% } else if (results.days[j].icon  == "clear-night") { %>
+                    <span class="forecast-icon ">&#127765</span>
+                <% } else if (results.days[j].icon  == "cloudy") { %>
+                    <span class="forecast-icon cloudy">&#x2601</span>
+                <% } else if (results.days[j].icon  == "rain") { %>
+                    <span class="forecast-icon rain ">&#127783</span>
+                <% } else if (results.days[j].icon  == "fog") { %>
+                    <span class="forecast-icon ">&#127787</span>
+                <% } else if (results.days[j].icon  == "snow") { %>
+                    <span class="forecast-icon ">&#10052</span>
+                <% } else if (rresults.days[j].icon == "wind") { %>
+                    <span class="forecast-icon ">&#127786</span>
+                <% } %>
+
+                <%= results.days[j].icon %>
+            </div>
+           
+            <% } %>
+        </div>
+    </div>
+     
+</body>
+</html>
